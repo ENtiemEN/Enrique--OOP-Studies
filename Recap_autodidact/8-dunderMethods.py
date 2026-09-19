@@ -37,4 +37,45 @@ class CarritoCompras:
         return f"Carrito de {self.cliente} ({len(self)} artículos) - Total: ${total}"
 
     # 4. Sobrecarga de suma (+): carrito1 + carrito2
-    
+    def __add__(self, otro: "CarritoCompras") -> "CarritoCompras":
+        """Fusiona dos Carritos en uno nuevo combinando sus artículos"""
+        if not isinstance(otro, CarritoCompras):
+            return NotImplemented
+
+        nuevo_carrito = CarritoCompras(f"{self.cliente} & {otro.cliente}")
+
+        nuevo_carrito.items = self.items + otro.items
+        return nuevo_carrito
+
+    # Sobrecarga de igualdad (==): carrito1 = carrito2
+    def __eq__(self, otro: object) -> bool:
+        """Determina que dos carritos son iguales si tienen el mismo valor total"""
+        if not isinstance(otro, CarritoCompras):
+            return NotImplemented
+        total_self = sum(precio for _ ,precio in self.items)
+        total_otro = sum(precio for _,precio in otro.items)
+        return total_self == total_otro
+
+# Testeo
+c1 = CarritoCompras("Enrique")
+c1.agregar("Teclado", 108.0)
+c1.agregar("Mouse", 100.0)
+
+c2 = CarritoCompras("Diana")
+c2.agregar("Monitor", 306.00)
+
+# __str__ y __repr__
+print(str(c1))
+print(str(c2))
+#print(repr(c1))
+
+# Uso del __len__
+print(f"Total de artículos en c1: {len(c1)}")
+
+# Sobrecarga de igualdad -> __eq__
+print(f"¿Valen lo mismo c1 y c2? -> {c1 == c2}")
+
+# Sobrecarga de suma -> __add__
+c_combinado = c1 + c2
+print(str(c_combinado))
+print(f"Artículos fusionados: {len(c_combinado)}")
